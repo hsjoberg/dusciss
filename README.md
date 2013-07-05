@@ -1,4 +1,4 @@
 dusciss
 =======
 
-A simple image board created in PHP using CodeIgniter 2
+A simple image board created in Node.
