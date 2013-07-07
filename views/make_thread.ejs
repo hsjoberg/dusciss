@@ -1,0 +1,48 @@
+<% include common/default_top.ejs %>
+		<div class="page-header">
+			<h1>Make a new thread</h1>
+		</div>
+<%= selectedBoard %>
+		<form action="create-thread" method="post" accept-charset="utf-8" class="form-horizontal" enctype="multipart/form-data">
+			<fieldset>
+				<div class="control-group">
+					<label class="control-label" for="title">Title</label>
+					<div class="controls">
+						<input type="text" id="title" name="title" value="" autofocus="autofocus" />
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label" for="text">Message</label>
+					<div class="controls">
+						<textarea id="text" name="text"></textarea>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<label class="control-label" for="board">Board</label>
+					<div class="controls">
+						<select id="board" name="board">
+							<option value="gaming"<% if(selectedBoard=="gaming") { %> selected="selected"<% } %>>gaming</option>
+							<option value="programming"<% if(selectedBoard=="programming") { %> selected="selected"<% } %>>programming</option>
+							<option value="news"<% if(selectedBoard=="news") { %> selected="selected"<% } %>>news</option>
+							<option value="electronicmusic"<% if(selectedBoard=="electronicmusic") { %> selected="selected"<% } %>>electronicmusic</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label" for="img">Upload image</label>
+					<div class="controls">
+						<input id="filestyle" id="img" name="img" type="file" />
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<div class="controls">
+						<button type="submit" class="btn">Post</button>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+<% include common/default_bottom.ejs %>

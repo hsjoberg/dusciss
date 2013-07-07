@@ -1,0 +1,62 @@
+<% include common/default_top.ejs %>
+		<div class="row-fluid">
+			<div class="span4">
+				<ul class="nav nav-pills pull-left">
+				  <li class="dropdown active">
+					<a href="#" data-toggle="dropdown" role="button" class="dropdown-toggle"><%=: feed.boardName | capitalize %> <b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<li><a href="/" role="menuitem">Main feed</a></li>
+						<li class="divider"></li>
+						<li><a href="/feed/gaming" role="menuitem">Gaming</a></li>
+						<li><a href="/feed/programming" role="menuitem">Programming</a></li>	
+						<li><a href="/feed/news" role="menuitem">News</a></li>
+						<li><a href="/feed/electronicmusic" role="menuitem">Electronicmusic</a></li>
+					</ul>
+				  </li>
+				</ul>
+			</div>
+			<div class="span4 visible-desktop">
+				<h1 class="main-title"><%=: feed.boardName | capitalize  %></h1>
+			</div>
+			<div class="span4 pull-right text-right">
+				<a class="btn"><span class="icon-question-sign"></span> About</a>
+				<a href="/create-thread<%= (!feed.mainFeed) ? '/'+feed.boardName : '' %>" class="btn"><span class="icon-pencil"></span> Make post</a>
+			</div>
+		</div>
+<%	
+	var threads = feed.threads;
+	if(threads.length>0) {
+		for(var i=0; i<threads.length; i++) {
+			var thread = threads[i];
+%>
+		<div class="feed">
+			<div class="row-fluid">
+				<div class="span12 thread">
+					<div class="thread-head">
+						<h2 class="thread-head-title"><a href="#"><%= thread.title %></a></h2>
+						<p class="thread-head-board">
+							<a href="/<%= thread.board %>"><%= thread.board %></a>
+						</p>
+					</div>
+					<div class="thread-posts">
+<%			for(var j=0; j<thread.posts.length; j++) {
+				var post = thread.posts[j];
+%>
+						<div class="thread-post">
+							<h3>Anonymous</h3>
+							<p><%= post.text %></p>
+						</div>
+<%			} %>
+					</div>
+				</div>
+			</div>
+		</div>
+<%		}
+	}
+	else {
+%>
+		<h2 class="text-info text-center">No threads found!</h2>
+<%
+	}
+ %>
+<% include common/default_bottom.ejs %>
