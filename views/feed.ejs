@@ -35,7 +35,7 @@
 					<div class="thread-head">
 						<h2 class="thread-head-title"><a href="#"><%= thread.title %></a></h2>
 						<p class="thread-head-board">
-							<a href="/<%= thread.board %>"><%= thread.board %></a>
+							<a href="/feed/<%= thread.board %>"><%= thread.board %></a>
 						</p>
 					</div>
 					<div class="thread-posts">
@@ -47,6 +47,14 @@
 							<p><%= post.text %></p>
 						</div>
 <%			} %>
+					</div>
+					<div class="thread-post">
+						<form class="form-inline" method="post" action="/new-post/<%= thread._id %>">
+							<fieldset>
+								<input name="text" type="text" value="" />
+								<input type="submit" value="Send" class="btn btn-success" />
+							</fieldset>
+						</form>
 					</div>
 				</div>
 			</div>
