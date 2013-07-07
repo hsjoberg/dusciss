@@ -14,3 +14,8 @@ results
 
 npm-debug.log
 node_modules
+
+### SublimeText ###
+# SublimeText project files
+*.sublime-workspace
+*.sublime-project
