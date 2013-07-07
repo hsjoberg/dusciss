@@ -41,6 +41,14 @@ app.get('/create-thread', feed.showCreateThread);
 app.get('/create-thread/:board', feed.showCreateThread);
 app.post('/create-thread', feed.createThread);
 
+app.get('/error', function(request,response) {
+	response.render('error', {
+		appTitle: 'Dusciss',
+		errorMessage : 'This is the error page'
+	});
+});
+
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
