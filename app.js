@@ -11,7 +11,7 @@ var express = require('express')
 
 // Initialize
 var app = express();
-mongoose.connect('mongodb://localhost/database');
+mongoose.connect('mongodb://localhost/dusciss');
 
 // all environments
 app.set('port', process.env.PORT || 8080);
