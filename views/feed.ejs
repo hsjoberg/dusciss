@@ -48,6 +48,14 @@
 						</div>
 <%			} %>
 					</div>
+					<div class="thread-post">
+						<form class="form-inline" method="post" action="/new-post/<%= thread._id %>">
+							<fieldset>
+								<input name="text" type="text" value="" />
+								<input type="submit" value="Send" class="btn btn-success" />
+							</fieldset>
+						</form>
+					</div>
 				</div>
 			</div>
 		</div>

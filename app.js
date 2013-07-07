@@ -56,7 +56,10 @@ app.get('/feed/:board', feed.showFeed)
 // New thread:
 app.get('/create-thread', feed.showCreateThread);
 app.get('/create-thread/:board', feed.showCreateThread);
-app.post('/create-thread', feed.createThread);
+
+// Create thread or post
+app.post('/new-post', feed.newPost);
+app.post('/new-post/:thread_id', feed.newPost);
 
 app.get('/error', function(request, response, next) {
 	next('This is the error page');
