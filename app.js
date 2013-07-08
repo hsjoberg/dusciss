@@ -6,7 +6,7 @@ mongoose = require('mongoose');
 var express = require('express')
 , http = require('http')
 , path = require('path')
-
+, stylus = require('stylus')
 , feed = require('./routes/feed');
 
 // Initialize
@@ -24,7 +24,12 @@ app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));
 app.use(express.session());
 app.use(app.router);
-app.use(require('stylus').middleware(__dirname + '/public'));
+app.use(stylus.middleware({
+	src : __dirname + '/public',
+	compile : function(str, path) {
+		 return stylus(str).set('filename', path).set('compress', 'production' == app.get('env'));
+	}
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // General error handling:
