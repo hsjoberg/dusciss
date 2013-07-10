@@ -19,3 +19,6 @@ node_modules
 # SublimeText project files
 *.sublime-workspace
 *.sublime-project
+
+# Misc
+Thumbs.db
