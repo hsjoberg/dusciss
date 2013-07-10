@@ -7,6 +7,7 @@
 	-	[POST]	newPost()
 					Handles requests for new board posts
 */
+var fs = require('fs');
 
 
 var Thread = require('../models/ThreadModel');
@@ -47,6 +48,37 @@ exports.showCreateThread = function(request, response) {
 }
 
 exports.newPost = function(request, response, next) {
+	// Check if an image was uploaded:
+	var imageIsUploaded = false;
+	var imgFileId = null; // This is the value that get stored in the document.
+	if(request.files && request.files.img && request.files.img.size > 0) {
+		var imageIsUploaded = true;
+		//	With help from:
+		//		https://github.com/mongodb/node-mongodb-native/blob/master/docs/gridfs.md
+		//		http://mongodb.github.io/node-mongodb-native/api-articles/nodekoarticle2.html
+		imgFileId = new mongoose.mongo.ObjectID();
+		var gs = mongoose.mongo.GridStore(mongoose.connection.db, imgFileId, "w", {
+			"content_type": "image/png",
+			"metadata":{
+			},
+			"chunk_size": 1024*4
+		});
+
+		gs.open(function(error, gridstore) {
+			if(error) throw error;
+ 			gs.writeFile(request.files.img.path, function(error, gridstore) {
+ 				if(error) throw error;
+
+ 				// Unlink file from temp:
+				fs.unlink(request.files.img.path, function(error) {
+					if(error) throw error;
+				});
+				console.log("New file upload!");
+ 			});
+		});
+	}
+
+
 	// If this is a new thread:
 	if(!('thread_id' in request.params) && request.param('title')) {
 		// Create our instance:
@@ -58,10 +90,15 @@ exports.newPost = function(request, response, next) {
 				text : request.param('text'),
 				date : new Date()
 			}]
-		})
+		});
 
+		if(imageIsUploaded) {
+			newThread.posts[0].imgId = imgFileId;
+		}
+		
 		newThread.save(function(error, theThread) {
-			console.log('Just saved ' + theThread);
+			console.log('Just created 	Thread Id		' + theThread._id);
+			console.log('				Thread PostId	' + theThread.posts[0]._id);
 		});
 
 		response.redirect('/');
@@ -93,6 +130,10 @@ exports.newPost = function(request, response, next) {
 								text : request.param('text'),
 								date : new Date()
 							});
+
+							if(imageIsUploaded) {
+								thread.posts[thread.posts.length-1].imgId = imgFileId;
+							}
 
 							// Save the thread:
 							thread.save(function(error, theThread) {
