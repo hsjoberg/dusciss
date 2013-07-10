@@ -1,4 +1,12 @@
-// Change some bootstrap things:
+clearfix()
+  visibility: hidden
+  display: block
+  font-size: 0
+  content: " "
+  clear: both
+  height: 0
+
+// Change some bootstrap things
 h1, h2, h3, h4, h5, h6
   margin: 0
 
@@ -37,13 +45,7 @@ body
   color: #eee
   padding: 6px 10px
 .thread-head:after
-  //clearfix:
-  visibility: hidden;
-  display: block;
-  font-size: 0;
-  content: " ";
-  clear: both;
-  height: 0;
+  clearfix()
 .thread-head-title
   float:left
 .thread-head-title a
@@ -55,9 +57,17 @@ body
 
 //.thread-posts
  
-
 .thread-post
-  padding: 4px 8px
-  
-
-
+  padding: 4px 8px  
+.thread-post-image
+  float: left
+  max-width: calc(50% \- 8px)
+  max-height: 180px - 8px
+  margin-right:8px
+  margin-bottom:8px
+.thread-post-image img
+  width:100%
+  max-width: 100%
+  max-height: 180px - 8px
+.thread-post p:after
+  clearfix()

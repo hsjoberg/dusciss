@@ -13,7 +13,8 @@ var threadSchema = mongoose.Schema({
 
 	posts : [{
 		text : String,
-		date : Date
+		date : Date,
+		imgId : mongoose.Schema.Types.ObjectId
 	}],
 });
 
