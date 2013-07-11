@@ -11,17 +11,18 @@ exports.showImage = function(request, response, next) {
 				// Open the file:
 				mongoose.mongo.GridStore(mongoose.connection.db, mongoose.mongo.ObjectID(request.params.id), 'r').open(function(error, gridstore) {
 					if(error) throw error;
-
-					gridstore.read(function(error, binStrFile) {
-						if(gridstore.contentType) {
-							response.set('Content-Type', gridstore.contentType);
-						}
-						if(gridstore.length) {
-							response.set('Content-Length', gridstore.length);
-						}
-						response.end(binStrFile);
-						return;
-					});
+					
+					if(gridstore.contentType) {
+						response.set('Content-Type', gridstore.contentType);
+					}
+					if(gridstore.length) {
+						response.set('Content-Length', gridstore.length);
+					}
+					response.set('Transfer-Encoding', 'chunked');
+					
+					// Stream the data:
+					var stream = gridstore.stream(true);
+					stream.pipe(response);
 				});
 			}
 			else {
