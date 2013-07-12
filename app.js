@@ -26,7 +26,7 @@ app.use(express.logger('dev'));
 app.use(express.bodyParser({
 	uploadDir: './temp/client_uploads' // POST file uploads will be uploaded to this folder.
 }));
-app.use(express.cookieParser());
+app.use(express.cookieParser('dusciss'));
 app.use(express.session());
 app.use(app.router);
 app.use(stylus.middleware({
