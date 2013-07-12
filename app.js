@@ -8,7 +8,9 @@ var express = require('express')
 , path = require('path')
 , stylus = require('stylus')
 , image = require('./routes/image')
-, feed = require('./routes/feed');
+, feed = require('./routes/feed')
+, DuscissError = require('./modules/ErrorHandler');
+
 
 // Initialize
 var app = express();
@@ -22,6 +24,7 @@ mongoose.connection.on('connected', function() {
 app.set('port', process.env.PORT || 8080);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
+
 app.use(express.logger('dev'));
 app.use(express.bodyParser({
 	uploadDir: './temp/client_uploads' // POST file uploads will be uploaded to this folder.
@@ -37,27 +40,14 @@ app.use(stylus.middleware({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// General error handling:
-app.use(function(error, request, response, next){
-	// Our simple error handling will accept String, otherwise continue to send the error to the error handler of express,
-	// as the error should then be a bug.
-	if(Object.prototype.toString.call(error) !== '[object String]') {
-		next(error);
-	}
-	else {
-		console.log("Dusciss error: " + error);
-
-		response.status(500);
-		response.render('error', {
-			appTitle : 'Dusciss',
-			errorMessage : error
-		});
-	}
+// 404:
+app.use(function(request, response, next){
+	response.status(404);
+	next(new Error("The requested page could not be found."));
 });
 
-if ('development' == app.get('env')) {
-	app.use(express.errorHandler());
-}
+// At last, the general error handler:
+app.use(DuscissError.errorHandler);
 
 // Get the feed
 app.get('/', feed.showFeed);
@@ -72,9 +62,9 @@ app.post('/new-post', feed.newPost);
 app.post('/new-post/:thread_id', feed.newPost);
 
 app.get('/error', function(request, response, next) {
-	next('This is the error page');
+	response.status(200);
+	next(new Error('This is the error page'));
 });
-
 
 app.get('/i/:id', image.showImage);
 

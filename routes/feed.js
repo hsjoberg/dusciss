@@ -8,11 +8,9 @@
 					Handles requests for new board posts
 */
 var fs = require('fs');
-
-
 var Thread = require('../models/ThreadModel');
 
-exports.showFeed = function(request, response){
+exports.showFeed = function(request, response, next) {
 	var mainFeed = true;
 	var board = "Main Feed";
 
@@ -25,7 +23,7 @@ exports.showFeed = function(request, response){
 	}
 
 	searchForThreads.exec(function(error, threads) {
-		if(error) throw error;
+		if(error) return next(error);
 
 		response.render('feed', {
 			appTitle: 'Dusciss', // Yeah should always be "Duscuss I guess... whatever
@@ -65,19 +63,26 @@ exports.newPost = function(request, response, next) {
 		});
 
 		gs.open(function(error, gridstore) {
-			if(error) throw error;
+			if(error) {
+				response.status(500);
+				return next(error);
+			}
  			gs.writeFile(request.files.img.path, function(error, gridstore) {
- 				if(error) throw error;
+ 				if(error) {
+ 					response.status(500);
+ 					return next(error);
+ 				}
 
  				// Unlink file from temp:
 				fs.unlink(request.files.img.path, function(error) {
-					if(error) throw error;
+					if(error) {
+						response.status(500);
+						return next(error);
+					}
 				});
-				console.log("New file upload!");
  			});
 		});
 	}
-
 
 	// If this is a new thread:
 	if(!('thread_id' in request.params) && request.param('title')) {
@@ -109,46 +114,48 @@ exports.newPost = function(request, response, next) {
 
 		// Check if threadId is a valid MongoDB ObjectId:
 		if(!threadId.match(/^[0-9a-fA-F]{24}$/)) { // Validate if ObjectId according to http://stackoverflow.com/a/13851334
-			next('Invalid request.');
+			response.status(400); // 400 Bad Request
+			return next(new Error('Invalid request.'));
 		}
-		else {
-			// Try to find the thread.
-			var searchForThread = Thread.findById(threadId);
-			searchForThread.exec(function(error, thread) {
-				if(error) {
-					next(error);
+		
+		// Try to find the thread.
+		var searchForThread = Thread.findById(threadId);
+		searchForThread.exec(function(error, thread) {
+			if(error) {
+				response.status(500);
+				return next(error);
+			}
+
+			// If the thread can't be found:
+			if (!thread || 0 === thread.length) {
+				response.status(404);
+				return next("Cannot find the thread. It might have been deleted.");
+			}
+			
+			if(thread.posts && Object.prototype.toString.call(thread.posts) === '[object Array]' ) { // The correct way to check if Object is an Array, according to http://stackoverflow.com/a/4775737
+				// Insert the new post:
+				thread.posts.push({
+					text : request.param('text'),
+					date : new Date()
+				});
+
+				if(imageIsUploaded) {
+					thread.posts[thread.posts.length-1].imgId = imgFileId;
 				}
-				else {
-					// If the thread can't be found:
-					if (!thread || 0 === thread.length) {
-						next("Cannot find the thread. It might have been deleted.");
-					}
-					else {
-						if(thread.posts && Object.prototype.toString.call(thread.posts) === '[object Array]' ) { // The correct way to check if Object is an Array, according to http://stackoverflow.com/a/4775737
-							// Insert the new post:
-							thread.posts.push({
-								text : request.param('text'),
-								date : new Date()
-							});
 
-							if(imageIsUploaded) {
-								thread.posts[thread.posts.length-1].imgId = imgFileId;
-							}
-
-							// Save the thread:
-							thread.save(function(error, theThread) {
-								if(error)
-									next(error);
-								else
-									response.redirect('/');
-							});
-						}
-						else {
-							next('Could not fulfill your request due to an database error.');
-						}
+				// Save the thread:
+				thread.save(function(error, theThread) {
+					if(error) {
+						response.status(500);
+						return next(error);
 					}
-				} // searchForThread.exec(function(error, thread) {
-			}); // end 
-		} // end else
+					response.redirect('/');
+				});
+			}
+			else {
+				response.status(500);
+				return next('Could not fulfill your request due to an database error.');
+			}
+		}); // end 
 	} // end else
 }
