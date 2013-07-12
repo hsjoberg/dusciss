@@ -13,23 +13,20 @@ var express = require('express')
 // Initialize
 var app = express();
 
-var db = mongoose.connect('mongodb://localhost/dusciss');
-//conosle.log(db);
+mongoose.connect('mongodb://localhost/dusciss');
 mongoose.connection.on('connected', function() {
-	console.log('Connection to MongoDB is opened.');
+	console.log('Connection to MongoDB server established.');
 });
 
 // all environments
 app.set('port', process.env.PORT || 8080);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
-//app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser({
 	uploadDir: './temp/client_uploads' // POST file uploads will be uploaded to this folder.
 }));
-app.use(express.methodOverride());
-app.use(express.cookieParser('your secret here'));
+app.use(express.cookieParser());
 app.use(express.session());
 app.use(app.router);
 app.use(stylus.middleware({
