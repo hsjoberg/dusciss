@@ -8,6 +8,7 @@ exports.errorHandler = function(error, request, response, next) {
 	response.render('error', {
 		appTitle : 'Dusciss',
 		error : error,
+		code : response.statusCode,
 		env : env
 	});
 };

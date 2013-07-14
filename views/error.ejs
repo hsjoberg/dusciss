@@ -1,6 +1,6 @@
 <% include common/default_top.ejs %>
 		<div class="page-header">
-			<h1 class="text-error">An error has occurred.</h1>
+			<h1 class="text-error"><%= code %> - An error has occurred.</h1>
 		</div>
 		<div class="row-fluid">
 			<div class="span12">
@@ -11,8 +11,14 @@
 if(env == "development") {
 	var stack = (error.stack || '').split('\n').slice(1).map(function(v){ return '<li>' + v + '</li>'; }).join(''); // code from errorHandler.js (ExpressJS/Connect<)
 -%>
+		<style>
+			ul {
+				margin: 0;
+				list-style-type: none;
+			}
+		</style>
 		<div class="row_fluid">
-			<ul><%- stack %></ul>
+			<pre><ul><%- stack %></ul></pre>
 		</div>
 <%
 }
