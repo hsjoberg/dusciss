@@ -2,26 +2,27 @@
 		<div class="page-header">
 			<h1>Make a new thread</h1>
 		</div>
-		<form action="/new-post" method="post" accept-charset="utf-8" class="form-horizontal" enctype="multipart/form-data">
+
+		<form action="/new-post" method="post" accept-charset="utf-8" class="form-horizontal" role="form" enctype="multipart/form-data">
 			<fieldset>
-				<div class="control-group">
-					<label class="control-label" for="title">Title</label>
-					<div class="controls">
-						<input type="text" id="title" name="title" value="" autofocus="autofocus" />
+				<div class="form-group">
+					<label class="control-label col-lg-1" for="title">Title</label>
+					<div class="col-lg-11">
+						<input class="form-control" type="text" id="title" name="title" value="" autofocus="autofocus" />
 					</div>
 				</div>
 
-				<div class="control-group">
-					<label class="control-label" for="text">Message</label>
-					<div class="controls">
-						<textarea id="text" name="text"></textarea>
+				<div class="form-group">
+					<label class="control-label col-lg-1" for="text">Message</label>
+					<div class="col-lg-11">
+						<textarea class="form-control" id="text" name="text"></textarea>
 					</div>
 				</div>
 				
-				<div class="control-group">
-					<label class="control-label" for="board">Board</label>
-					<div class="controls">
-						<select id="board" name="board">
+				<div class="form-group">
+					<label class="control-label col-lg-1" for="board">Board</label>
+					<div class="col-lg-11">
+						<select class="form-control" id="board" name="board">
 							<option value="gaming"<% if(selectedBoard=="gaming") { %> selected="selected"<% } %>>gaming</option>
 							<option value="programming"<% if(selectedBoard=="programming") { %> selected="selected"<% } %>>programming</option>
 							<option value="news"<% if(selectedBoard=="news") { %> selected="selected"<% } %>>news</option>
@@ -30,16 +31,16 @@
 					</div>
 				</div>
 
-				<div class="control-group">
-					<label class="control-label" for="img">Upload image</label>
-					<div class="controls">
+				<div class="form-group">
+					<label class="control-label col-lg-1" for="img">Upload image</label>
+					<div class="col-lg-11">
 						<input id="filestyle" id="img" name="img" type="file" />
 					</div>
 				</div>
 				
-				<div class="control-group">
-					<div class="controls">
-						<button type="submit" class="btn">Post</button>
+				<div class="form-group">
+					<div class=" col-lg-offset-11 col-lg-1">
+						<button type="submit" class="btn btn-primary">Post</button>
 					</div>
 				</div>
 			</fieldset>
